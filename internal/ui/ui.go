@@ -125,7 +125,10 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 			})
 
 			if hasUpdate {
-				updateBtn.Enable()
+				fyne.Do(func() {
+					updateBtn.Enable()
+
+				})
 				notes := release.Body
 				if len(notes) > 200 {
 					notes = notes[:200] + "..."
