@@ -60,7 +60,7 @@ func (c *Checker) Log(format string, args ...any) {
 // Check fetches the latest GitHub release and returns whether an update is available.
 func (c *Checker) Check() (*Release, bool, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/releases/latest", apiBase, c.Owner, c.Repo)
-
+	fmt.Println(url)
 	client := &http.Client{Timeout: 15 * time.Second}
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("Accept", "application/vnd.github+json")

@@ -3,12 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"moralinkgost-updater/internal/github"
+	"moralinkgost-updater/internal/scheduler"
+	"moralinkgost-updater/internal/service"
+	"moralinkgost-updater/internal/ui"
 	"os"
-
-	"github.com/luisgustavorr/moralink-updater/internal/github"
-	"github.com/luisgustavorr/moralink-updater/internal/scheduler"
-	"github.com/luisgustavorr/moralink-updater/internal/service"
-	"github.com/luisgustavorr/moralink-updater/internal/ui"
 )
 
 // Version is injected at build time via -ldflags
@@ -40,8 +39,8 @@ func main() {
 	}
 
 	checker := github.NewChecker(
-		"yourusername", // TODO: replace with your GitHub username
-		"moralinkgost", // TODO: replace with your repo name
+		"luisgustavorr", // TODO: replace with your GitHub username
+		"moralinkgost",  // TODO: replace with your repo name
 		Version,
 	)
 

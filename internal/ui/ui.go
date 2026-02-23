@@ -2,6 +2,8 @@ package ui
 
 import (
 	"fmt"
+	"moralinkgost-updater/internal/github"
+	"moralinkgost-updater/internal/service"
 	"strings"
 	"time"
 
@@ -13,9 +15,6 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-
-	"github.com/luisgustavorr/moralink-updater/internal/github"
-	"github.com/luisgustavorr/moralink-updater/internal/service"
 )
 
 // Run opens the updater window. This is the entry point for GUI mode.
@@ -52,7 +51,7 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 
 	// ── Service status ────────────────────────────────────────────────────────
 	statusDot := canvas.NewCircle(color.NRGBA{R: 80, G: 200, B: 80, A: 255})
-	statusDot.SetMinSize(fyne.NewSize(12, 12))
+	// statusDot.SetMinSize(fyne.NewSize(12, 12))
 	statusText := widget.NewLabel("Service: checking...")
 	statusRow := container.NewHBox(statusDot, statusText)
 
@@ -76,12 +75,21 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 	setStatus := func(running bool) {
 		if running {
 			statusDot.FillColor = color.NRGBA{R: 80, G: 200, B: 80, A: 255}
-			statusText.SetText("Service: running")
+			fyne.Do(func() {
+				statusText.SetText("Service: running")
+
+			})
 		} else {
 			statusDot.FillColor = color.NRGBA{R: 220, G: 60, B: 60, A: 255}
-			statusText.SetText("Service: stopped")
+			fyne.Do(func() {
+				statusText.SetText("Service: stopped")
+
+			})
 		}
-		statusDot.Refresh()
+		fyne.Do(func() {
+
+			statusDot.Refresh()
+		})
 	}
 
 	doCheck := func() {
@@ -98,8 +106,12 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 			// Check for updates
 			release, hasUpdate, err := checker.Check()
 			if err != nil {
-				latestLabel.SetText(fmt.Sprintf("Error: %v", err))
-				checkBtn.Enable()
+				fyne.Do(func() {
+					latestLabel.SetText(fmt.Sprintf("Error: %v", err))
+					checkBtn.Enable()
+
+				})
+
 				return
 			}
 
@@ -112,9 +124,15 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 				if len(notes) > 200 {
 					notes = notes[:200] + "..."
 				}
-				releaseNotesLabel.SetText("What's new:\n" + notes)
+				fyne.Do(func() {
+					releaseNotesLabel.SetText("What's new:\n" + notes)
+
+				})
 			} else {
-				releaseNotesLabel.SetText("✓  You are up to date.")
+				fyne.Do(func() {
+					releaseNotesLabel.SetText("✓  You are up to date.")
+
+				})
 			}
 			checkBtn.Enable()
 		}()
