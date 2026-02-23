@@ -39,20 +39,20 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 	title.TextStyle = fyne.TextStyle{Bold: true}
 	title.Alignment = fyne.TextAlignCenter
 
-	subtitle := canvas.NewText("Manage your MoraLink service updates", color.NRGBA{R: 180, G: 180, B: 180, A: 255})
+	subtitle := canvas.NewText("Gerencie o serviço da MoraLink", color.NRGBA{R: 180, G: 180, B: 180, A: 255})
 	subtitle.TextSize = 13
 	subtitle.Alignment = fyne.TextAlignCenter
 
 	// ── Version cards ─────────────────────────────────────────────────────────
-	currentLabel := widget.NewLabel(fmt.Sprintf("Installed version:  v%s", strings.TrimPrefix(currentVersion, "v")))
-	latestLabel := widget.NewLabel("Latest version:  checking...")
+	currentLabel := widget.NewLabel(fmt.Sprintf("Versão instalada:  v%s", strings.TrimPrefix(currentVersion, "v")))
+	latestLabel := widget.NewLabel("Última versão:  verificando...")
 	releaseNotesLabel := widget.NewLabel("")
 	releaseNotesLabel.Wrapping = fyne.TextWrapWord
 
 	// ── Service status ────────────────────────────────────────────────────────
 	statusDot := canvas.NewCircle(color.NRGBA{R: 80, G: 200, B: 80, A: 255})
 	// statusDot.SetMinSize(fyne.NewSize(12, 12))
-	statusText := widget.NewLabel("Service: checking...")
+	statusText := widget.NewLabel("Serviço: verificando...")
 	statusRow := container.NewHBox(statusDot, statusText)
 
 	// ── Progress bar ──────────────────────────────────────────────────────────
@@ -63,11 +63,11 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 	progressInfo.Hide()
 
 	// ── Buttons ───────────────────────────────────────────────────────────────
-	updateBtn := widget.NewButton("Update Now", nil)
+	updateBtn := widget.NewButton("Atualizar Agora", nil)
 	updateBtn.Importance = widget.HighImportance
 	updateBtn.Disable()
 
-	checkBtn := widget.NewButton("Check Again", nil)
+	checkBtn := widget.NewButton("Verificar Novamente", nil)
 
 	// ── State helpers ─────────────────────────────────────────────────────────
 	var latestRelease *github.Release
@@ -76,13 +76,13 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 		if running {
 			statusDot.FillColor = color.NRGBA{R: 80, G: 200, B: 80, A: 255}
 			fyne.Do(func() {
-				statusText.SetText("Service: running")
+				statusText.SetText("Serviço: rodando")
 
 			})
 		} else {
 			statusDot.FillColor = color.NRGBA{R: 220, G: 60, B: 60, A: 255}
 			fyne.Do(func() {
-				statusText.SetText("Service: stopped")
+				statusText.SetText("Serviço: parado")
 
 			})
 		}
@@ -95,7 +95,7 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 	doCheck := func() {
 		checkBtn.Disable()
 		fyne.Do(func() {
-			latestLabel.SetText("Latest version:  checking...")
+			latestLabel.SetText("Última versão:  checking...")
 
 		})
 		updateBtn.Disable()
@@ -120,7 +120,7 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 
 			latestRelease = release
 			fyne.Do(func() {
-				latestLabel.SetText(fmt.Sprintf("Latest version:  %s", release.TagName))
+				latestLabel.SetText(fmt.Sprintf("Última versão:  %s", release.TagName))
 
 			})
 
@@ -134,12 +134,12 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 					notes = notes[:200] + "..."
 				}
 				fyne.Do(func() {
-					releaseNotesLabel.SetText("What's new:\n" + notes)
+					releaseNotesLabel.SetText("Novidades:\n" + notes)
 
 				})
 			} else {
 				fyne.Do(func() {
-					releaseNotesLabel.SetText("✓  You are up to date.")
+					releaseNotesLabel.SetText("✓  Você está usando a última versão.")
 
 				})
 			}
@@ -166,34 +166,34 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 		progressBar.SetValue(0)
 		progressInfo.Show()
 		fyne.Do(func() {
-			progressInfo.SetText("Stopping service...")
+			progressInfo.SetText("Parando serviço...")
 
 		})
 
 		go func() {
 			// Stop service
 			if err := svc.Stop(); err != nil {
-				progressInfo.SetText(fmt.Sprintf("Failed to stop service: %v", err))
+				progressInfo.SetText(fmt.Sprintf("Erro ao parar serviço: %v", err))
 				updateBtn.Enable()
 				checkBtn.Enable()
 				return
 			}
 
-			progressInfo.SetText("Downloading update...")
+			progressInfo.SetText("Instalando atualização...")
 			progressCh := make(chan int, 50)
 
 			// Update progress bar from channel
 			go func() {
 				for p := range progressCh {
 					progressBar.SetValue(float64(p) / 100.0)
-					progressInfo.SetText(fmt.Sprintf("Downloading... %d%%", p))
+					progressInfo.SetText(fmt.Sprintf("Instalando... %d%%", p))
 				}
 			}()
 
 			// Download and replace
 			if err := checker.DownloadAndReplace(latestRelease, progressCh); err != nil {
 				close(progressCh)
-				progressInfo.SetText(fmt.Sprintf("Download failed: %v", err))
+				progressInfo.SetText(fmt.Sprintf("Instalação falhou: %v", err))
 				// Try to restart service anyway
 				svc.Start()
 				setStatus(true)
@@ -203,13 +203,13 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 			close(progressCh)
 
 			// Restart service
-			progressInfo.SetText("Restarting service...")
+			progressInfo.SetText("Reiniciando serviço...")
 			time.Sleep(500 * time.Millisecond)
 
 			if err := svc.Start(); err != nil {
-				progressInfo.SetText(fmt.Sprintf("Warning: service restart failed: %v", err))
+				progressInfo.SetText(fmt.Sprintf("Aviso : Reinicialização do serviço falhou : %v", err))
 			} else {
-				progressInfo.SetText("✓  Update complete! Service is running.")
+				progressInfo.SetText("✓ Atualização finalizada ! Serviço está online.")
 				setStatus(true)
 			}
 

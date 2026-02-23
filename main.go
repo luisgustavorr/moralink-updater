@@ -44,7 +44,7 @@ func main() {
 		Version,
 	)
 
-	svcManager := service.NewManager("moralinkgost")
+	svcManager := service.NewManager("moralink-gost")
 
 	// Headless mode: check and update silently (triggered by scheduler)
 	if *headless {

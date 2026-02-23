@@ -29,8 +29,8 @@ make windows  # → dist/moralink-updater-windows-amd64.exe (needs mingw-w64)
 Edit `internal/github/checker.go` and set:
 
 ```go
-const owner = "yourusername"   // your GitHub username/org
-const repo  = "moralinkgost"   // the repo where you publish releases
+const owner = "luisgustavorr"   //  GitHub username/org
+const repo  = "moralink-updater"   // the repo where you publish releases
 ```
 
 And the install path in `serviceExecutablePath()`:
