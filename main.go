@@ -39,8 +39,8 @@ func main() {
 	}
 
 	checker := github.NewChecker(
-		"luisgustavorr", // TODO: replace with your GitHub username
-		"moralinkgost",  // TODO: replace with your repo name
+		"luisgustavorr",
+		"moralink-updater",
 		Version,
 	)
 

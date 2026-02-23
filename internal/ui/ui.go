@@ -94,7 +94,10 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 
 	doCheck := func() {
 		checkBtn.Disable()
-		latestLabel.SetText("Latest version:  checking...")
+		fyne.Do(func() {
+			latestLabel.SetText("Latest version:  checking...")
+
+		})
 		updateBtn.Disable()
 
 		go func() {
@@ -116,7 +119,10 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 			}
 
 			latestRelease = release
-			latestLabel.SetText(fmt.Sprintf("Latest version:  %s", release.TagName))
+			fyne.Do(func() {
+				latestLabel.SetText(fmt.Sprintf("Latest version:  %s", release.TagName))
+
+			})
 
 			if hasUpdate {
 				updateBtn.Enable()
@@ -134,7 +140,10 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 
 				})
 			}
-			checkBtn.Enable()
+			fyne.Do(func() {
+				checkBtn.Enable()
+
+			})
 		}()
 	}
 
@@ -153,7 +162,10 @@ func buildUI(currentVersion string, checker *github.Checker, svc *service.Manage
 		progressBar.Show()
 		progressBar.SetValue(0)
 		progressInfo.Show()
-		progressInfo.SetText("Stopping service...")
+		fyne.Do(func() {
+			progressInfo.SetText("Stopping service...")
+
+		})
 
 		go func() {
 			// Stop service
